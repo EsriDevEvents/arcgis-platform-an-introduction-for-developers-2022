@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css"/>
+  <script src="https://js.arcgis.com/4.24/"></script>
+  <script src="utils.js"></script>
+  
+  <title>Load 45MB feature service GeoJSON with Leaflet</title>
+  <style>#viewDiv,body,html{padding:0;margin:0;height:100%;width:100%}.esri-popup__button--dock,.esri-popup__button.esri-popup__action{display:none}.esri-view-width-xlarge .esri-popup__main-container{width:250px}</style>
+</head>
+<body>
+  <div id="viewDiv"></div>
+  <script>    
+    require([ 
+      "esri/core/watchUtils",
+      "esri/WebMap", 
+      "esri/views/MapView",
+      "esri/layers/GraphicsLayer",
+    ], (
+      watchUtils,
+      WebMap,
+      MapView,
+      GraphicsLayer
+    ) => {  
+      const webmap = new WebMap({
+        portalItem: { id: "99880ff91cf24b9da0c8ca4f7a2072ea" },
+        basemap: "streets-navigation-vector"
+      });
+
+      const view = new MapView({
+        map: webmap,
+        container: "viewDiv",
+        center: [2.069802, 46.9244927],
+        zoom: 5
+      });
+
+      const graphicsLayer = new GraphicsLayer();
+      view.map.add(graphicsLayer);
+      
+      view.when(function() {
+        const layer = webmap.allLayers.getItemAt(2)
+        view.whenLayerView(layer).then(function(lview) {
+          watchUtils.whenFalseOnce(lview, "updating", function() {
+            view.on("pointer-move", function(evt) {
+              highlightFeature.queryFeatures({lview, view, evt, graphicsLayer});
+            });
+          });
+        });
+      });
+    })
+  </script>
+</body>
+</html>

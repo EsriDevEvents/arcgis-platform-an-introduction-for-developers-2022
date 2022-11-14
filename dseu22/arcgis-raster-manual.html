@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>WebTileLayer | Sample | ArcGIS API for JavaScript 4.24</title>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.24/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.24/"></script>
+
+    <script>
+      require(["esri/layers/Layer", "esri/Map", "esri/views/MapView"], (
+        Layer,
+        Map,
+        MapView
+      ) => {
+        const map = new Map({
+          basemap: "streets-navigation-vector"
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          center: [-65, -15],
+          //layers: [
+          //  {
+          //    portalItem: {
+                // autocasts new PortalItem()
+          //      id: ""
+          //    }
+          //  }
+          //]
+        });
+                Layer.fromPortalItem({
+          portalItem: {
+            // autocasts as new PortalItem()
+            id: "2f1526f3569c448db8929140892c50eb"
+          }
+        })
+          .then(addLayer)
+          .catch(rejection);
+
+        // Adds the layer to the map once it loads
+        function addLayer(layer) {
+          map.add(layer);
+        }
+
+        function rejection(error) {
+          console.log("Layer failed to load: ", error);
+        }
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
+
+

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css"/>
+  <script src="https://js.arcgis.com/4.24/"></script>
+  <script src="utils.js"></script>
+  
+  <title>Load 45MB feature service GeoJSON with Leaflet</title>
+  <style>#viewDiv,body,html{padding:0;margin:0;height:100%;width:100%}.esri-popup__button--dock,.esri-popup__button.esri-popup__action{display:none}.esri-view-width-xlarge .esri-popup__main-container{width:250px}.esri-feature {letter-spacing: 0em;line-height: 1.55rem;font-feature-settings: "liga"1, "calt"0;background: #fff;padding: 1em;}.esri-feature__content-element{padding: 0}.esri-feature__content-element p{margin:0}.esri-feature.esri-widget{width:400px; display:none}</style>
+</head>
+<body>
+  <div id="viewDiv"></div>
+  <script>    
+    require([ 
+      "esri/core/promiseUtils",
+      "esri/WebMap", 
+      "esri/views/MapView",
+      "esri/layers/GraphicsLayer",
+      "esri/widgets/Feature"
+    ], (
+      promiseUtils,
+      WebMap,
+      MapView,
+      GraphicsLayer,
+      Feature
+    ) => {  
+      const webmap = new WebMap({
+        portalItem: { id: "32ccb5c4f5cf41138fa01ae127ba7a38" },
+        basemap: "streets-navigation-vector"
+      });
+
+      const view = new MapView({
+        map: webmap,
+        container: "viewDiv",
+        center: [2.069802, 46.9244927],
+        zoom: 5
+      });
+
+      const graphic = {
+        popupTemplate: {
+          content: "Mouse over features to show details..."
+        }
+      };
+
+      // Provide graphic to a new instance of a Feature widget
+      const feature = new Feature({
+        graphic: graphic,
+        map: view.map,
+        spatialReference: view.spatialReference
+      });
+      
+      feature.when(() =>{
+        feature.container.addEventListener('mouseover', (event) => {
+          feature.container.style.display = "none";
+        })
+      })
+      
+
+      view.ui.add(feature, "manual");
+
+      view.when(function() {
+        const fLayer = webmap.allLayers.getItemAt(1);
+        fLayer.popupEnabled = false
+        fLayer.outFields = ["medianIncome2015", "nom"];
+        view.whenLayerView(fLayer).then((layerView) => {
+            let highlight;
+            let objectId;
+
+            const debouncedUpdate = promiseUtils.debounce((event) => {
+              view.hitTest(event).then((event) => {
+                
+                // Make sure graphic has a popupTemplate
+                const results = event.results.filter((result) => {
+                  return result.graphic.layer.popupTemplate;
+                });
+
+                const result = results[0];
+                const newObjectId =
+                  result && result.graphic.attributes[fLayer.objectIdField];
+
+                if (!newObjectId) {
+                  highlight && highlight.remove();
+                  objectId = feature.graphic = null;
+                  feature.container.style.display = "none"
+                } else if (objectId !== newObjectId) {
+                  feature.container.style.display = "block"
+                  highlight && highlight.remove();
+                  objectId = newObjectId;
+                  feature.graphic = result.graphic;
+                  highlight = layerView.highlight(result.graphic);
+                }
+              });
+            });
+
+            view.on("pointer-move", (event) => {
+              feature.container.style.top = (event.y + 10) + "px";
+              feature.container.style.left = (event.x - 200 + 10) + "px";
+              debouncedUpdate(event).catch((err) => {
+                if (!promiseUtils.isAbortError(err)) {
+                  throw err;
+                }
+              });
+            });
+          });
+        });
+    })
+  </script>
+</body>
+</html>

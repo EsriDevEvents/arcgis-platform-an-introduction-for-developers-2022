@@ -10,7 +10,7 @@
 
 ### Demos
 
-**Data Hosting**: Loading a layer with 34980 polygons & 4 attributes per polygon (48.8MB uncompressed)
+**Data Hosting**: Loading a [dataset with 34980 polygons & 4 attributes per polygon (48.8MB uncompressed)](https://hhkaos2.maps.arcgis.com/home/item.html?id=d1ce356f049d47bea501a80f1485d490)
 * [RAW GeoJSON using Leaflet & OSM basemap](https://esridevevents.github.io/arcgis-platform-an-introduction-for-developers-2022/dseu22/leaflet.html)
 * [RAW GeoJSON using ArcGIS Maps SDK for JavaScript & Esri basemap](https://esridevevents.github.io/arcgis-platform-an-introduction-for-developers-2022/dseu22/arcgis-geojson.html)
 * [Feature Tile Layer using ArcGIS Maps SDK for JavaScript & Esri basemap](https://esridevevents.github.io/arcgis-platform-an-introduction-for-developers-2022/dseu22/arcgis.html)

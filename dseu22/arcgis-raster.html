@@ -7,7 +7,6 @@
   
   <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css"/>
   <script src="https://js.arcgis.com/4.24/"></script>
-  <script src="utils.js"></script>
   
   <title>Load 45MB feature service GeoJSON with Leaflet</title>
   <style>#viewDiv,body,html{padding:0;margin:0;height:100%;width:100%}.esri-feature.esri-widget{width:400px; display:none}</style>
@@ -20,17 +19,21 @@
       "esri/WebMap", 
       "esri/views/MapView",
       "esri/layers/GraphicsLayer",
-      "esri/widgets/Feature"
+      "esri/widgets/Feature",
+      "esri/config"
     ], (
       promiseUtils,
       WebMap,
       MapView,
       GraphicsLayer,
-      Feature
+      Feature,
+      esriConfig
     ) => {  
+      esriConfig.apiKey= "AAPK2aed34cdcd844b739e6b5962fdc9d611-qXCveOPXD7v01sR1_Nrq5cPKFwyCTiQYml4rc_jxY8x4_FG9RroaZ5agblzB-Rg";
+      
       const webmap = new WebMap({
         portalItem: { id: "d50ba20cf99d4a3eaaeb396e75f54e49" },
-        basemap: "streets-navigation-vector"
+        basemap: "arcgis-navigation"
       });
 
       const view = new MapView({

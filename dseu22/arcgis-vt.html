@@ -7,7 +7,6 @@
   
   <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css"/>
   <script src="https://js.arcgis.com/4.24/"></script>
-  <script src="utils.js"></script>
   
   <title>Load 45MB feature service GeoJSON with Leaflet</title>
   <style>#viewDiv,body,html{padding:0;margin:0;height:100%;width:100%}.esri-popup__button--dock,.esri-popup__button.esri-popup__action{display:none}.esri-view-width-xlarge .esri-popup__main-container{width:250px}.esri-feature {letter-spacing: 0em;line-height: 1.55rem;font-feature-settings: "liga"1, "calt"0;background: #fff;padding: 1em;}.esri-feature__content-element{padding: 0}.esri-feature__content-element p{margin:0}.esri-feature.esri-widget{width:400px; display:none}</style>
@@ -20,17 +19,21 @@
       "esri/WebMap", 
       "esri/views/MapView",
       "esri/layers/GraphicsLayer",
-      "esri/widgets/Feature"
+      "esri/widgets/Feature",
+      "esri/config"
     ], (
       promiseUtils,
       WebMap,
       MapView,
       GraphicsLayer,
-      Feature
+      Feature,
+      esriConfig
     ) => {  
+      esriConfig.apiKey= "AAPK2aed34cdcd844b739e6b5962fdc9d611-qXCveOPXD7v01sR1_Nrq5cPKFwyCTiQYml4rc_jxY8x4_FG9RroaZ5agblzB-Rg";
+
       const webmap = new WebMap({
         portalItem: { id: "32ccb5c4f5cf41138fa01ae127ba7a38" },
-        basemap: "streets-navigation-vector"
+        basemap: "arcgis-navigation"
       });
 
       const view = new MapView({
